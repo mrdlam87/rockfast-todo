@@ -67,6 +67,10 @@ body {
   height: 100vh;
 }
 
+.hidden {
+  display: none;
+}
+
 .grid {
   display: grid;
   row-gap: 9.6rem;
