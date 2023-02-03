@@ -1,15 +1,7 @@
-import { useContext } from "react";
-import { UIContext } from "../../contexts/ui.context";
 import "./modal.style.scss";
 
-const Modal = () => {
-  const { isModalOpen } = useContext(UIContext);
-
-  return (
-    <div className={`modal-container ${isModalOpen ? "" : "hidden"}`}>
-      <h2>MODAL</h2>
-    </div>
-  );
+const Modal = ({ children, show }) => {
+  return show ? <div className={"modal-container"}>{children}</div> : null;
 };
 
 export default Modal;

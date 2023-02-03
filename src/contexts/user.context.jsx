@@ -16,9 +16,8 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        axios
-          .get("http://127.0.0.1:5086/users")
-          .then((response) => setUsers(response.data));
+        const response = await axios.get("http://127.0.0.1:5086/users");
+        setUsers(response.data);
       } catch (error) {
         console.log("Failed to fetch users");
       }
@@ -30,9 +29,10 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserTodos = async () => {
       try {
-        axios
-          .get(`http://127.0.0.1:5086/users/${currentUser.id}/todos`)
-          .then((response) => setCurrentUserTodos(response.data));
+        const response = await axios.get(
+          `http://127.0.0.1:5086/users/${currentUser.id}/todos`
+        );
+        setCurrentUserTodos(response.data);
       } catch (error) {
         console.log("Failed to fetch users");
       }

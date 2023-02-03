@@ -14,48 +14,17 @@ html {
 }
 
 body {
-  font-family: "Rubik", sans-serif;
-  line-height: 1;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.6rem;
   font-weight: 400;
   color: #555;
   overflow-x: hidden;
 }
 
-/* GENERAL COMPONENTS */
-.heading-primary {
-  font-size: 5.2rem;
-  line-height: 1.05;
-  margin-bottom: 3.2rem;
-}
-
-.heading-primary,
-.heading-secondary,
-.heading-tertiary {
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  color: #333;
-}
-
-.heading-secondary {
-  font-size: 4.4rem;
-  line-height: 1.2;
-  margin-bottom: 9.6rem;
-}
-
-.heading-tertiary {
-  font-size: 3rem;
-  line-height: 1.2;
-  margin-bottom: 3.2rem;
-}
-
-.sub-heading {
-  display: block;
-  font-size: 1.6rem;
+h2 {
+  font-size: 2.4rem;
   font-weight: 500;
-  color: #cf711f;
-  text-transform: uppercase;
-  margin-bottom: 1.6rem;
-  letter-spacing: 0.75px;
+  letter-spacing: 2px;
 }
 
 /* GENERAL REUSEABLE COMPONENTS */
@@ -201,7 +170,4 @@ strong {
 /* CUSTOM FOCUS OUTLINE */
 *:focus {
   outline: none;
-  /* outline: 4px dotted #e67e22;
-  outline-offset: 8px; */
-  box-shadow: 0 0 0 0.8rem rgba(230, 125, 34, 0.53);
 }

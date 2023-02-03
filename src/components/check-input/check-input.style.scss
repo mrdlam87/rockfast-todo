@@ -1,0 +1,16 @@
+.check-input {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+
+  label {
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+
+  input {
+    width: 2.4rem;
+    height: 2.4rem;
+    cursor: pointer;
+  }
+}

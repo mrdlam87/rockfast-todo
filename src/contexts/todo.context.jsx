@@ -11,9 +11,8 @@ export const TodoProvider = ({ children }) => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        axios
-          .get("http://127.0.0.1:5086/todos")
-          .then((response) => setTodos(response.data));
+        const response = await axios.get("http://127.0.0.1:5086/todos");
+        setTodos(response.data);
       } catch (error) {
         console.log("Failed to fetch todos");
       }
