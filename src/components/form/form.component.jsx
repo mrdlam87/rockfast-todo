@@ -1,19 +1,27 @@
 import "./form.style.scss";
+import { IoCloseCircle } from "react-icons/io5";
 
-const Form = ({ title, titleItem, children, onCancelClick, onAddClick }) => {
+const Form = ({
+  title,
+  children,
+  onCancelClick,
+  onAddClick,
+  onCloseClick,
+  edit,
+}) => {
   return (
     <div className="form">
       <div className="form-title">
         <h2>{title}</h2>
-        {titleItem}
+        <IoCloseCircle className="title-icon" onClick={onCloseClick} />
       </div>
       <div className="form-body">{children}</div>
       <div className="form-footer">
         <button className="clear-btn" onClick={onCancelClick}>
-          CANCEL
+          {edit ? "DELETE" : "CANCEL"}
         </button>
         <button className="submit-btn" onClick={onAddClick}>
-          ADD
+          {edit ? "UPDATE" : "ADD"}
         </button>
       </div>
     </div>

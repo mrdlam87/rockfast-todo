@@ -91,27 +91,6 @@ strong {
   font-weight: 500;
 }
 
-.list {
-  font-size: 1.8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.6rem;
-}
-
-.list-item {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 1.6rem;
-  line-height: 1.2;
-}
-
-.list-icon {
-  width: 3rem;
-  height: 3rem;
-  color: #cf711f;
-}
-
 /* BELOW 1344 PIXELS (Smaller Desktops) */
 @media (max-width: 84em) {
   .heading-primary {

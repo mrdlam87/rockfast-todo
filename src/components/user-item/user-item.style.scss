@@ -1,11 +1,12 @@
-.list-item {
+.user-item {
   cursor: pointer;
   font-size: 1.8rem;
   font-weight: 500;
   letter-spacing: 2px;
+  flex: 1;
 }
 
-.list-item:hover {
+.user-item:hover {
   color: #0b1b32;
   font-weight: 800;
 }
