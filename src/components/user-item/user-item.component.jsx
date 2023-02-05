@@ -5,7 +5,7 @@ import UserForm from "../user-form/user-form.component";
 import "./user-item.style.scss";
 
 const UserItem = ({ user }) => {
-  const { name } = user;
+  const { fullName } = user;
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { setModal, setFormType } = useContext(UIContext);
 
@@ -15,7 +15,8 @@ const UserItem = ({ user }) => {
     setModal(true);
   };
 
-  let selectedClassName = user === currentUser ? "selected" : "";
+  let selectedClassName =
+    currentUser && currentUser.id === user.id ? "selected" : "";
 
   return (
     <div className="item-container">
@@ -23,7 +24,7 @@ const UserItem = ({ user }) => {
         className={`user-item ${selectedClassName}`}
         onClick={() => setCurrentUser(user)}
       >
-        {name}
+        {fullName}
       </h3>
       <p onClick={onEditClick}>EDIT</p>
     </div>

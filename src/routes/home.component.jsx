@@ -33,14 +33,13 @@ const Home = () => {
       <Modal show={isModalOpen && formType}>{formType}</Modal>
       <div className="container padding-top-md grid grid--2-cols">
         <ListCard title="Users" onAddClick={userAddClick}>
-          {users.map((user) => (
-            <UserItem user={user} key={user.id} />
-          ))}
+          {users && users.map((user) => <UserItem user={user} key={user.id} />)}
         </ListCard>
         <ListCard title="Todos" onAddClick={todoAddClick}>
-          {currentUserTodos.map((todo) => (
-            <TodoItem todo={todo} key={todo.id} />
-          ))}
+          {currentUserTodos &&
+            currentUserTodos.map((todo) => (
+              <TodoItem todo={todo} key={todo.id} />
+            ))}
         </ListCard>
       </div>
     </>

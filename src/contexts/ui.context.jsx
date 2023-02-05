@@ -1,12 +1,5 @@
 import { createContext, useState } from "react";
 
-export const FORM_TYPE = {
-  ADD_TODO: "ADD_TODO",
-  EDIT_TODO: "EDIT_TODO",
-  ADD_USER: "ADD_USER",
-  EDIT_USER: "EDIT_USER",
-};
-
 export const UIContext = createContext({
   isModalOpen: false,
   setModal: () => {},

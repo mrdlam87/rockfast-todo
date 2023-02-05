@@ -6,34 +6,37 @@ import TextInput from "../text-input/text-input.component";
 
 const UserForm = ({ user, edit }) => {
   const { setModal } = useContext(UIContext);
-  const { users, addUser, updateUser, deleteUser } = useContext(UserContext);
+  const { addUser, updateUser, deleteUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
-    id: user ? user.id : users[users.length - 1].id + 1,
-    name: user ? user.name : "",
+    // id: user ? user.id : users[users.length - 1].id + 1,
+    fullName: user ? user.fullName : "",
+    todos: user ? user.todos : [],
   });
 
-  const onCancelHandler = () => {
-    // DELETE
-    if (edit) {
-      deleteUser(user.id);
-      console.log("DELETING: ", user);
-    }
-
-    setModal(false);
+  const onCancelHandler = async () => {
+    try {
+      // DELETE
+      if (edit) {
+        await deleteUser(user.id);
+      }
+      console.log("Failed to update user");
+      setModal(false);
+    } catch (error) {}
   };
-  const onAddHandler = () => {
-    // POST
-    if (!edit) {
-      addUser(formData);
-      console.log("ADDING: ", formData);
-    } else {
-      // PUT
-      user.name = formData.name;
-      updateUser(user);
-      console.log("UPDATING: ", user);
+  const onAddHandler = async () => {
+    try {
+      // POST
+      if (!edit) {
+        await addUser(formData);
+      } else {
+        // PUT
+        user.fullName = formData.fullName;
+        await updateUser(user);
+      }
+      setModal(false);
+    } catch (error) {
+      console.log("Failed to update user");
     }
-
-    setModal(false);
   };
 
   const inputChangeHandler = (identifier, event) =>
@@ -55,8 +58,8 @@ const UserForm = ({ user, edit }) => {
       <TextInput
         label="Full Name"
         placeholderText="Enter full name"
-        value={formData.name}
-        onChange={inputChangeHandler.bind(this, "name")}
+        value={formData.fullName}
+        onChange={inputChangeHandler.bind(this, "fullName")}
       />
     </Form>
   );

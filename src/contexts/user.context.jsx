@@ -1,5 +1,11 @@
-import axios from "axios";
 import { createContext, useEffect, useReducer } from "react";
+import {
+  delUser,
+  fetchUsers,
+  fetchUserTodos,
+  postUser,
+  putUser,
+} from "../util/http";
 
 const INITIAL_STATE = {
   users: [],
@@ -14,9 +20,6 @@ const ACTION_TYPES = {
   DELETE_USER: "DELETE_USER",
   SET_CURRENT_USER: "SET_CURRENT_USER",
   SET_CURRENT_USER_TODOS: "SET_CURRENT_USER_TODOS",
-  ADD_USER_TODO: "ADD_USER_TODO",
-  UPDATE_USER_TODO: "UPDATE_USER_TODO",
-  DELETE_USER_TODO: "DELETE_USER_TODO",
 };
 
 const usersReducer = (state, action) => {
@@ -61,33 +64,6 @@ const usersReducer = (state, action) => {
         ...state,
         currentUserTodos: payload,
       };
-    case ACTION_TYPES.ADD_USER_TODO:
-      return {
-        ...state,
-        currentUserTodos: [payload, ...state.currentUserTodos],
-      };
-    case ACTION_TYPES.UPDATE_USER_TODO:
-      const todoIndex = state.currentUserTodos.findIndex(
-        (td) => td.id === payload.id
-      );
-      const updatedTodo = {
-        ...state.currentUserTodos[todoIndex],
-        ...payload,
-      };
-      const updatedUserTodos = [...state.currentUserTodos];
-      updatedUserTodos[todoIndex] = updatedTodo;
-      return {
-        ...state,
-        currentUserTodos: updatedUserTodos,
-      };
-    case ACTION_TYPES.DELETE_USER_TODO:
-      return {
-        ...state,
-        currentUserTodos: state.currentUserTodos.filter(
-          (td) => td.id !== payload
-        ),
-      };
-
     default:
       return state;
   }
@@ -117,14 +93,22 @@ export const UserProvider = ({ children }) => {
   const setUsers = (users) =>
     dispatch({ type: ACTION_TYPES.SET_USERS, payload: users });
 
-  const addUser = (user) =>
-    dispatch({ type: ACTION_TYPES.ADD_USER, payload: user });
+  const addUser = async (user) => {
+    const id = await postUser(user);
+    dispatch({ type: ACTION_TYPES.ADD_USER, payload: { id, ...user } });
+  };
 
-  const updateUser = (user) =>
+  const updateUser = async (user) => {
+    await putUser(user.id, user);
     dispatch({ type: ACTION_TYPES.UPDATE_USER, payload: user });
+  };
 
-  const deleteUser = (id) =>
+  const deleteUser = async (id) => {
+    await delUser(id);
+    setCurrentUser(null);
+    setCurrentUserTodos([]);
     dispatch({ type: ACTION_TYPES.DELETE_USER, payload: id });
+  };
 
   const setCurrentUser = (user) =>
     dispatch({ type: ACTION_TYPES.SET_CURRENT_USER, payload: user });
@@ -132,41 +116,68 @@ export const UserProvider = ({ children }) => {
   const setCurrentUserTodos = (todos) =>
     dispatch({ type: ACTION_TYPES.SET_CURRENT_USER_TODOS, payload: todos });
 
-  const addUserTodo = (todo) =>
-    dispatch({ type: ACTION_TYPES.ADD_USER_TODO, payload: todo });
+  const addUserTodo = async (todo) => {
+    const todos = [todo, ...currentUserTodos];
+    await updateUser({
+      ...currentUser,
+      todos,
+    });
+    dispatch({ type: ACTION_TYPES.SET_CURRENT_USER_TODOS, payload: todos });
+  };
 
-  const updateUserTodo = (todo) =>
-    dispatch({ type: ACTION_TYPES.UPDATE_USER_TODO, payload: todo });
+  const updateUserTodo = async (todo) => {
+    const todoIndex = currentUserTodos.findIndex((td) => td.id === todo.id);
+    const updatedTodo = {
+      ...currentUserTodos[todoIndex],
+      ...todo,
+    };
+    const updatedUserTodos = [...currentUserTodos];
+    updatedUserTodos[todoIndex] = updatedTodo;
+    await updateUser({
+      ...currentUser,
+      todos: updatedUserTodos,
+    });
+    dispatch({
+      type: ACTION_TYPES.SET_CURRENT_USER_TODOS,
+      payload: updatedUserTodos,
+    });
+  };
 
-  const deleteUserTodo = (id) =>
-    dispatch({ type: ACTION_TYPES.DELETE_USER_TODO, payload: id });
+  const deleteUserTodo = async (id) => {
+    const todos = currentUserTodos.filter((td) => td.id !== id);
+    await updateUser({
+      ...currentUser,
+      todos,
+    });
+
+    dispatch({ type: ACTION_TYPES.SET_CURRENT_USER_TODOS, payload: todos });
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const loadUsers = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:5086/users");
-        setUsers(response.data);
+        const users = await fetchUsers();
+        setUsers(users);
       } catch (error) {
         console.log("Failed to fetch users");
       }
     };
 
-    fetchUsers();
+    loadUsers();
   }, []);
 
   useEffect(() => {
-    const fetchUserTodos = async () => {
+    const loadUserTodos = async () => {
       try {
-        const response = await axios.get(
-          `http://127.0.0.1:5086/users/${currentUser.id}/todos`
-        );
-        setCurrentUserTodos(response.data);
+        const data = await fetchUserTodos(currentUser.id);
+        console.log(0);
+        setCurrentUserTodos(data);
       } catch (error) {
         console.log("Failed to fetch todos");
       }
     };
 
-    fetchUserTodos();
+    loadUserTodos();
   }, [currentUser]);
 
   const value = {
