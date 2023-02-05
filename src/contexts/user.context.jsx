@@ -1,9 +1,12 @@
 import { createContext, useEffect, useReducer } from "react";
 import {
+  delTodo,
   delUser,
   fetchUsers,
   fetchUserTodos,
+  postTodo,
   postUser,
+  putTodo,
   putUser,
 } from "../util/http";
 
@@ -117,11 +120,9 @@ export const UserProvider = ({ children }) => {
     dispatch({ type: ACTION_TYPES.SET_CURRENT_USER_TODOS, payload: todos });
 
   const addUserTodo = async (todo) => {
+    const id = await postTodo(currentUser.id, todo);
+    todo.id = id;
     const todos = [todo, ...currentUserTodos];
-    await updateUser({
-      ...currentUser,
-      todos,
-    });
     dispatch({ type: ACTION_TYPES.SET_CURRENT_USER_TODOS, payload: todos });
   };
 
@@ -133,22 +134,16 @@ export const UserProvider = ({ children }) => {
     };
     const updatedUserTodos = [...currentUserTodos];
     updatedUserTodos[todoIndex] = updatedTodo;
-    await updateUser({
-      ...currentUser,
-      todos: updatedUserTodos,
-    });
+    await putTodo(currentUser.id, todo);
     dispatch({
       type: ACTION_TYPES.SET_CURRENT_USER_TODOS,
       payload: updatedUserTodos,
     });
   };
 
-  const deleteUserTodo = async (id) => {
-    const todos = currentUserTodos.filter((td) => td.id !== id);
-    await updateUser({
-      ...currentUser,
-      todos,
-    });
+  const deleteUserTodo = async (todoId) => {
+    const todos = currentUserTodos.filter((td) => td.id !== todoId);
+    await delTodo(currentUser.id, todoId);
 
     dispatch({ type: ACTION_TYPES.SET_CURRENT_USER_TODOS, payload: todos });
   };
@@ -170,7 +165,6 @@ export const UserProvider = ({ children }) => {
     const loadUserTodos = async () => {
       try {
         const data = await fetchUserTodos(currentUser.id);
-        console.log(0);
         setCurrentUserTodos(data);
       } catch (error) {
         console.log("Failed to fetch todos");

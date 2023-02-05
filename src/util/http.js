@@ -1,50 +1,45 @@
 import axios from "axios";
 
-const BACKEND_URL =
-  "https://user-todos-default-rtdb.asia-southeast1.firebasedatabase.app/";
-
-// const BACKEND_API_URL = "http://127.0.0.1:5086";
+const BACKEND_API_URL = "http://127.0.0.1:5086";
 
 export const fetchUsers = async () => {
-  // const response = await axios.get(BACKEND_API_URL + "/users");
+  const reponse = await axios.get(BACKEND_API_URL + "/users");
 
-  // return response.data;
-
-  const response = await axios.get(BACKEND_URL + "/users.json");
-
-  const users = [];
-
-  for (const key in response.data) {
-    const user = {
-      id: key,
-      fullName: response.data[key].fullName,
-      todos: response.data[key].todos ?? [],
-    };
-
-    users.push(user);
-  }
-
-  return users;
+  return reponse.data;
 };
 
 export const postUser = async (userData) => {
-  const response = await axios.post(BACKEND_URL + "/users.json", userData);
+  const response = await axios.post(BACKEND_API_URL + "/users", userData);
 
-  // returns ID name from Fireabase
-  return response.data.name;
+  return response.data.id;
 };
 
 export const putUser = async (id, userData) =>
-  axios.put(BACKEND_URL + `/users/${id}.json`, userData);
+  axios.put(BACKEND_API_URL + `/users/${id}`, userData);
 
 export const delUser = async (id) =>
-  axios.delete(BACKEND_URL + `/users/${id}.json`);
+  axios.delete(BACKEND_API_URL + `/users/${id}`);
 
 export const fetchUserTodos = async (id) => {
-  // const response = await axios.get(BACKEND_API_URL + `/users/${userId}/todos`);
+  const response = await axios.get(BACKEND_API_URL + `/users/${id}/todos`);
 
-  // return response.data;
-  const response = await axios.get(BACKEND_URL + `/users/${id}.json`);
-
-  return response.data.todos ?? [];
+  return response.data;
 };
+
+export const postTodo = async (id, todoData) => {
+  const response = await axios.post(
+    BACKEND_API_URL + `/users/${id}/todos`,
+    todoData
+  );
+
+  return response.data.id;
+};
+
+export const putTodo = async (userId, todoData) =>
+  await axios.put(
+    BACKEND_API_URL + `/users/${userId}/todos/${todoData.id}`,
+    todoData
+  );
+
+export const delTodo = async (userId, todoId) =>
+  await axios.delete(BACKEND_API_URL + `/users/${userId}/todos/${todoId}`);

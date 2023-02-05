@@ -5,28 +5,16 @@ import CheckInput from "../check-input/check-input.component";
 import DatePicker from "../date-picker/date-picker.component";
 import Form from "../form/form.component";
 import TextInput from "../text-input/text-input.component";
-import { getFormattedDate } from "../../util/date";
 
 const TodoForm = ({ user, todo, edit }) => {
   const { setModal } = useContext(UIContext);
-  const { currentUserTodos, addUserTodo, updateUserTodo, deleteUserTodo } =
+  const { addUserTodo, updateUserTodo, deleteUserTodo } =
     useContext(UserContext);
 
-  const lastIndex = () => {
-    const sortedTodos = [...currentUserTodos].sort((a, b) => a.id - b.id);
-
-    return sortedTodos.length === 0
-      ? 0
-      : sortedTodos[sortedTodos.length - 1].id;
-  };
-
   const [formData, setFormData] = useState({
-    id: todo ? todo.id : lastIndex() + 1,
-    description: todo ? todo.description : "",
-    dateCreated: todo ? todo.dateCreated : getFormattedDate(new Date()),
-    dateCompleted: todo ? todo.dateCompleted : "",
+    name: todo ? todo.name : "",
+    dateCompleted: todo ? todo.dateCompleted : null,
     complete: todo ? todo.complete : false,
-    userId: user.id,
   });
 
   const onCancelHandler = async () => {
@@ -39,15 +27,16 @@ const TodoForm = ({ user, todo, edit }) => {
   };
   const onAddHandler = async () => {
     try {
+      if (formData.dateCompleted === "") formData.dateCompleted = null;
       // POST
       if (!edit) {
         await addUserTodo(formData);
       } else {
         // PUT
-        todo.description = formData.description;
+        todo.name = formData.name;
         todo.dateCompleted = formData.dateCompleted;
         todo.complete = formData.complete;
-        updateUserTodo(todo);
+        await updateUserTodo(todo);
       }
 
       setModal(false);
@@ -84,8 +73,8 @@ const TodoForm = ({ user, todo, edit }) => {
       <TextInput
         label="Description"
         placeholderText="Enter Todo description"
-        value={formData.description}
-        onChange={inputChangeHandler.bind(this, "description")}
+        value={formData.name}
+        onChange={inputChangeHandler.bind(this, "name")}
       />
       <DatePicker
         label="Date Completed"
